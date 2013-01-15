@@ -2,10 +2,13 @@
 #include <v8.h>
 #include <android/log.h>
 #include <stdlib.h>
-
+#include <stdio.h>
+#include <sstream>
+#include <map>
 #include "vatewrap.h"
 #include "parmenides.h"
 
+#include "pendercanvasjs/pendercanvasjs.h"
 
 v8::Handle<v8::Value> ParmenidesHelperGetNothing(v8::Local<v8::String> property, const v8::AccessorInfo & info);
 void ParmenidesHelperSetNothing(v8::Local<v8::String> property, v8::Local<v8::Value> value, const v8::AccessorInfo & info);
@@ -16,9 +19,7 @@ v8::Persistent<v8::Context> PrimaryContext;
 
 v8::Handle<v8::FunctionTemplate> ParmenidesTemplate;
 
-
 VateWrap * mPersistentVate;
-
 
 std::string ObjectToString(v8::Local<v8::Value> value) {
   v8::String::Utf8Value utf8_value(value);
@@ -28,9 +29,7 @@ std::string ObjectToString(v8::Local<v8::Value> value) {
 
 jstring Java_com_pender_PenderRenderer_test(JNIEnv*env,jobject obj) {
 
-
    v8::Persistent< v8::Context > context = v8::Context::New();
-//    __android_log_print(ANDROID_LOG_DEBUG, "FROM THE NDK!", "ALLLL CAPPPPS!");
    return env->NewStringUTF( "Hello from JNI !");
 
 }
@@ -39,6 +38,18 @@ extern "C" void Java_com_pender_cordovaplugin_PenderCordova_initvate(JNIEnv*env,
   
     __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK", "INITIALIZING VATEWRAP");
 
+    PenderCanvasJS penderCanvas;
+
+//    Pender_Canvas_Function_Map.insert( pair<std::string,int>("foo",10));
+/*
+    const std::map<std::string,int> foo = penderCanvas.getFunctionMap();
+    std::ostringstream stringStream;
+    stringStream << foo["imgDraw"];
+    std::string copyOfStr = stringStream.str();
+    __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK", copyOfStr.c_str());
+*/
+
+    
     using namespace v8;
 
 
@@ -81,6 +92,32 @@ extern "C" void Java_com_pender_cordovaplugin_PenderCordova_initvate(JNIEnv*env,
     // declaration and instantiation of the primary context
     PrimaryContext = v8::Context::New(NULL, global);
 
+
+    __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK", "Initialized Template, inject into context");
+
+
+
+   // v8::Context::Scope context_scope(PrimaryContext);
+    
+    penderCanvas.initCanvasFunctionTemplate();
+   
+    Handle<FunctionTemplate> canvasFunctionTemplate = penderCanvas._CanvasFunctionTemplate;
+
+    Handle<ObjectTemplate> canvasInstanceTemplate = ParmenidesTemplate->InstanceTemplate();
+
+
+
+
+
+
+
+
+    penderCanvas.injectInto(PrimaryContext);
+
+    __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK", "Successfully Injected");
+
+    
+
     // Test Parmenides
     Handle< String > name = String::New("The Edge of Sanity");
     Handle< String > cmd = String::New("function main() { var nothing = new Parmenides(); return nothing.nothing; } \n main();");
@@ -90,6 +127,8 @@ extern "C" void Java_com_pender_cordovaplugin_PenderCordova_initvate(JNIEnv*env,
     __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK: Executing Parmenides", result.c_str());
 
     delete [] cstr;
+
+
 }
 
 v8::Handle<v8::Value> ParmenidesHelperGetNothing(v8::Local<v8::String> property, const v8::AccessorInfo & info) {
@@ -138,6 +177,14 @@ std::string executeString( v8::Handle< v8::String > source, v8::Handle< v8::Valu
     }
     v8::String::Utf8Value retstr(result);
     return std::string(*retstr);
+}
+
+
+/*
+ *
+ */
+void initCanvasTemplate() {
+
 }
 
 /*
