@@ -12,7 +12,7 @@ run the following:
     git checkout ensufire_tutorial
     android update project --name vatedroid --target <android-int> --path .
 
-where <android-int> is the latest android target installed on your system.
+where "<android-int>" is the latest android target installed on your system.
 This tutorial was tested with android-17
 
 # Tutorial Parts
@@ -31,7 +31,7 @@ setting up an android NDK module to include V8
 
 ###tags
 checkout the following tags to see the project at the given tutorial step
-p2s4 - directory structure
-p2s5 - skeleton of vatedroid
-p2s6 - makefile 
-p2s7 - compileable
+- p2s4 - directory structure
+- p2s5 - skeleton of vatedroid
+- p2s6 - makefile 
+- p2s7 - compileable
