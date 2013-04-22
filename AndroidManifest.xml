@@ -3,7 +3,7 @@
       package="com.vatedroid"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="14"/>
+    <uses-sdk android:minSdkVersion="8"/>
     <application android:label="VATEDROID" android:icon="@drawable/icon">
         <activity android:name="VateDroidActivity"
                   android:label="VATEDROID">
