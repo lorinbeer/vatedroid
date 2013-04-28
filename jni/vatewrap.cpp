@@ -24,6 +24,8 @@ jstring Java_com_pender_PenderRenderer_test(JNIEnv*env,jobject obj) {
 }
 
 extern "C" jstring Java_com_pender_PenderRenderer_bottleThrower(JNIEnv * env, jobject obj, jstring name, jstring message) {
+    v8::Locker locker;
+
     v8::HandleScope scope;
     v8::TryCatch tc;
     v8::Context::Scope context_scope(PrimaryContext);
@@ -52,6 +54,7 @@ extern "C" jstring Java_com_pender_PenderRenderer_bottleThrower(JNIEnv * env, jo
     v8::String::Utf8Value retstr(result);
     retval = env->NewStringUTF(*retstr);
     return retval;
+
 }
 
 extern "C" void Java_com_pender_PenderRenderer_initvate(JNIEnv * env, jobject obj) {
@@ -59,6 +62,8 @@ extern "C" void Java_com_pender_PenderRenderer_initvate(JNIEnv * env, jobject ob
     __android_log_write(ANDROID_LOG_DEBUG, "Pender NDK", "INITIALIZING VATEWRAP");
 
     using namespace v8;
+
+    Locker v8Locker; 
 
     // create the scope and context
 
